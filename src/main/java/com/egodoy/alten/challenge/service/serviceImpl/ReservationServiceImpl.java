@@ -50,6 +50,10 @@ public class ReservationServiceImpl implements ReservationService {
                 return this.modifyReservation(reservation);
             }else{
                 List<ReservationRoomDTO> overlapRooms = reservation.getRooms().stream()
+                        .map(reservationRoomDTO -> {
+                            reservationRoomDTO.setId(null);
+                            return reservationRoomDTO;
+                        })
                         .filter(this::validateRoomOverlaps)
                         .collect(Collectors.toList());
                 if(overlapRooms.isEmpty()){
