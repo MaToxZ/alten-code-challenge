@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  #PostgresSQL Database for the application
+  alten-postgres:
+    image: "postgres:latest"
+    container_name: pg-alten-docker
+    #A volume is mounted up in order to allow postgres to storage the data
+    #volumes: #Uncomment this variables if you want to save the data before the docker is shut down
+    #  - alten-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432 #container port 5432 will be running postgres and we map that port to the port 5432 on the host machine
+    #Environment variables that will be available in our postgres container for our db connection details
+    environment:
+      - POSTGRES_DB=alten
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=docker
+
+
+  #Service definition for our Backend (Spring boot) application
+  alten-be-app:
+    # The docker file contained in our project will build the jar to generate an image named alten-be-app
+    build: ./
+    container_name: alten-be-app
+    #Environment variables for Alten-be-app (Spring boot) application
+    environment:
+      - db_host=alten-postgres
+      - db_name=alten
+      - db_username=postgres
+      - db_password=docker
+    ports:
+      - 8080:8080 #container port 8080 will be running postgres and we map that port to the port 8080 on the host machine
+    links:
+      - alten-postgres
+#volumes: #Uncomment this code if you want to save the data before the docker is shut down
+#  alten-data:
