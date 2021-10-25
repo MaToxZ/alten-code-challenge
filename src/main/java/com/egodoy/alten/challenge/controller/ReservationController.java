@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*",
+        methods = {RequestMethod.DELETE,RequestMethod.GET,RequestMethod.HEAD,RequestMethod.PATCH,RequestMethod.OPTIONS
+                ,RequestMethod.POST,RequestMethod.PUT})
 @RequestMapping("/reservation")
 public class ReservationController {
 

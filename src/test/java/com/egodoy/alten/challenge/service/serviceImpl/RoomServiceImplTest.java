@@ -105,14 +105,14 @@ class RoomServiceImplTest {
                             ReservationRoom.builder()
                                 .id(2L)
                                 .status((short) 1)
-                                .stayFrom(LocalDateTime.of(2021,10,23,0,0,0))
-                                .stayTo(LocalDateTime.of(2021,10,25,23,59,59))
+                                .stayFrom(LocalDateTime.from(LocalDate.now().plusDays(3).atTime(0,0,0)))
+                                .stayTo(LocalDateTime.from(LocalDate.now().plusDays(5).atTime(23,59,59)))
                                 .build(),
                             ReservationRoom.builder()
                                 .id(2L)
                                 .status((short) 1)
-                                .stayFrom(LocalDateTime.of(2021,10,29,0,0,0))
-                                .stayTo(LocalDateTime.of(2021,10,31,23,59,59))
+                                .stayFrom(LocalDateTime.from(LocalDate.now().plusDays(7).atTime(0,0,0)))
+                                .stayTo(LocalDateTime.from(LocalDate.now().plusDays(10).atTime(23,59,59)))
                                 .build()
                         )
                 )
@@ -137,6 +137,82 @@ class RoomServiceImplTest {
         PaginatedResult<RoomAvailabilityDto> response = roomService.findAvailabilityByDateRange(from, to, Optional.empty(),Optional.empty());
         Assertions.assertEquals(1, response.getData().size());
         Assertions.assertEquals(availability, response.getData().get(0).getAvailableDates());
+    }
+
+    @Test
+    void findAvailabilityByDateRangePeriodReserved() throws AltenChallengeException {
+
+        LocalDate from = LocalDate.now().plusDays(1);
+        LocalDate to = LocalDate.now().plusDays(10);
+        Room room = Room.builder()
+                .id(12L)
+                .roomView("Sea View")
+                .roomType(RoomType.builder()
+                        .id(2L)
+                        .name("Senior")
+                        .beds(List.of(RoomTypeBed.builder()
+                                                .bedType(Bed.QUEEN)
+                                                .quantity((short)1)
+                                                .build(),
+                                        RoomTypeBed.builder()
+                                                .bedType(Bed.SINGLE)
+                                                .quantity((short)1)
+                                                .build()
+                                )
+                        )
+                        .build()
+                )
+                .reservationRooms(List.of(
+                                ReservationRoom.builder()
+                                        .id(2L)
+                                        .status((short) 1)
+                                        .stayFrom(LocalDateTime.from(LocalDate.now().plusDays(1).atTime(0,0,0)))
+                                        .stayTo(LocalDateTime.from(LocalDate.now().plusDays(4).atTime(23,59,59)))
+                                        .build(),
+                                ReservationRoom.builder()
+                                        .id(2L)
+                                        .status((short) 1)
+                                        .stayFrom(LocalDateTime.from(LocalDate.now().plusDays(5).atTime(0,0,0)))
+                                        .stayTo(LocalDateTime.from(LocalDate.now().plusDays(8).atTime(23,59,59)))
+                                        .build(),
+                        ReservationRoom.builder()
+                                .id(2L)
+                                .status((short) 1)
+                                .stayFrom(LocalDateTime.from(LocalDate.now().plusDays(9).atTime(0,0,0)))
+                                .stayTo(LocalDateTime.from(LocalDate.now().plusDays(10).atTime(23,59,59)))
+                                .build()
+                        )
+                )
+                .build();
+        Pageable pageable = PageRequest.of(0, 25);
+        PageImpl page = new PageImpl(List.of(room),pageable,1);
+
+        List<LocalDate> availability = from.datesUntil(to.plusDays(1))
+                .collect(Collectors.toList());
+        availability.removeAll(room.getReservationRooms().get(0).getStayFrom().toLocalDate()
+                .datesUntil(room.getReservationRooms().get(0).getStayTo().toLocalDate().plusDays(1))
+                .collect(Collectors.toList())
+        );
+
+        availability.removeAll(room.getReservationRooms().get(1).getStayFrom().toLocalDate()
+                .datesUntil(room.getReservationRooms().get(1).getStayTo().toLocalDate().plusDays(1))
+                .collect(Collectors.toList())
+        );
+
+        availability.removeAll(room.getReservationRooms().get(0).getStayFrom().toLocalDate()
+                .datesUntil(room.getReservationRooms().get(0).getStayTo().toLocalDate().plusDays(1))
+                .collect(Collectors.toList())
+        );
+
+        availability.removeAll(room.getReservationRooms().get(2).getStayFrom().toLocalDate()
+                .datesUntil(room.getReservationRooms().get(2).getStayTo().toLocalDate().plusDays(1))
+                .collect(Collectors.toList())
+        );
+
+        BDDMockito.when(roomRepository.findAvailabilityByFromTo(BDDMockito.any(), BDDMockito.any() , BDDMockito.any()))
+                .thenReturn(page);
+        PaginatedResult<RoomAvailabilityDto> response = roomService.findAvailabilityByDateRange(from, to, Optional.empty(),Optional.empty());
+        Assertions.assertEquals(0, response.getData().size());
     }
 
     @Test

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.egodoy</groupId>
 	<artifactId>alten.challenge</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>alten.challenge</name>
 	<description>Code Challenge for a position in Alten</description>
 	<properties>

@@ -71,6 +71,7 @@ public class RoomServiceImpl implements RoomService {
                                     .availableDates(this.mergePeriodForAvailableDate(MainPeriod,reservedPeriod))
                                     .build();
                         })
+                        .filter(roomAvailabilityDto -> !roomAvailabilityDto.getAvailableDates().isEmpty())
                         .collect(Collectors.toList());
                 return PaginatedResult.<RoomAvailabilityDto>builder()
                         .data(roomAvailabilityDtos)
