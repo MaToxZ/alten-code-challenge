@@ -11,24 +11,25 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/room/availability?stayFrom=2021-10-25&stayTo=2021-10-30",
+					"raw": "http://localhost:8080/api/room/availability?stayFrom=2021-11-07&stayTo=2021-11-10",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"room",
 						"availability"
 					],
 					"query": [
 						{
 							"key": "stayFrom",
-							"value": "2021-10-25"
+							"value": "2021-11-07"
 						},
 						{
 							"key": "stayTo",
-							"value": "2021-10-30"
+							"value": "2021-11-10"
 						}
 					]
 				}
@@ -50,13 +51,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/reservation/book",
+					"raw": "http://localhost:8080/api/reservation/book",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"reservation",
 						"book"
 					]
@@ -71,7 +73,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"reservation\": {\n        \"id\": \"c1a9687c-a6d1-4826-92c8-da3139494cc3\",\n        \"visitorName\": \"Eladio Godoy\",\n        \"visitorEmail\": \"eladiogodoy328@gmail.com\",\n        \"visitorPhone\": \"0983921382\",\n        \"status\": 1\n    },\n    \"rooms\": [\n        {\n            \"id\": 6,\n            \"room\": {\n                \"id\": 12,\n                \"roomView\": \"Sea View\",\n                \"roomType\": {\n                    \"id\": 2,\n                    \"name\": \"Senior\",\n                    \"occupants\": 3,\n                    \"beds\": [\n                        {\n                            \"quantity\": 1,\n                            \"bedType\": \"QUEEN\"\n                        },\n                        {\n                            \"quantity\": 1,\n                            \"bedType\": \"SINGLE\"\n                        }\n                    ]\n                }\n            },\n            \"stayFrom\": \"2021-10-24T00:00:00\",\n            \"stayTo\": \"2021-10-25T23:59:59.999999999\",\n            \"status\": 1\n        }\n    ]\n}",
+					"raw": "{\n    \"reservation\": {\n        \"id\": \"3f6e5802-68d9-466d-be5e-3ba1a21c1060\",\n        \"visitorName\": \"Fanny Parada\",\n        \"visitorEmail\": \"fannyparada@gmail.com\",\n        \"visitorPhone\": \"3102832421\",\n        \"status\": 1\n    },\n    \"rooms\": [\n        {\n            \"id\": 2,\n            \"room\": {\n                \"id\": 12,\n                \"roomView\": \"Sea View\",\n                \"roomType\": {\n                    \"id\": 2,\n                    \"name\": \"Senior\",\n                    \"occupants\": 3,\n                    \"beds\": [\n                        {\n                            \"quantity\": 1,\n                            \"bedType\": \"QUEEN\"\n                        },\n                        {\n                            \"quantity\": 1,\n                            \"bedType\": \"SINGLE\"\n                        }\n                    ]\n                }\n            },\n            \n            \"status\": 1\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -79,13 +81,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/reservation/modify",
+					"raw": "http://localhost:8080/api/reservation/modify",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"reservation",
 						"modify"
 					]
@@ -99,13 +102,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/reservation/ec6ba29c-ec39-4579-bb3a-24e4ec677a51/cancel",
+					"raw": "http://localhost:8080/api/reservation/ec6ba29c-ec39-4579-bb3a-24e4ec677a51/cancel",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"reservation",
 						"ec6ba29c-ec39-4579-bb3a-24e4ec677a51",
 						"cancel"
@@ -120,15 +124,16 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/reservation/fb804a49-d46c-43bc-b109-6cf1ec1416e4",
+					"raw": "http://localhost:8080/api/reservation/3f6e5802-68d9-466d-be5e-3ba1a21c1060",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"reservation",
-						"fb804a49-d46c-43bc-b109-6cf1ec1416e4"
+						"3f6e5802-68d9-466d-be5e-3ba1a21c1060"
 					]
 				}
 			},
@@ -140,13 +145,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/alive",
+					"raw": "http://localhost:8080/api/alive",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"alive"
 					]
 				}
