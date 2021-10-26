@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "45aad9b3-3876-4907-83c3-bf721be6c1e2",
+		"name": "Alten-Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "findRoomAvailability",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/room/availability?stayFrom=2021-10-25&stayTo=2021-10-30",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"room",
+						"availability"
+					],
+					"query": [
+						{
+							"key": "stayFrom",
+							"value": "2021-10-25"
+						},
+						{
+							"key": "stayTo",
+							"value": "2021-10-30"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "BookAReservation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reservation\": {\n        \"visitorName\": \"Valeska Salazar\",\n        \"visitorEmail\": \"valeska.salazar6@gmail.com\",\n        \"visitorPhone\": \"0983921382\",\n        \"status\": 1\n    },\n    \"rooms\": [\n        {\n            \"id\": 6,\n            \"room\": {\n                \"id\": 12,\n                \"roomView\": \"Sea View\",\n                \"roomType\": {\n                    \"id\": 2,\n                    \"name\": \"Senior\",\n                    \"occupants\": 3,\n                    \"beds\": [\n                        {\n                            \"quantity\": 1,\n                            \"bedType\": \"QUEEN\"\n                        },\n                        {\n                            \"quantity\": 1,\n                            \"bedType\": \"SINGLE\"\n                        }\n                    ]\n                }\n            },\n            \"stayFrom\": \"2021-10-28\",\n            \"stayTo\": \"2021-10-30\",\n            \"status\": 1\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/reservation/book",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"reservation",
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ModifyReservation",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"reservation\": {\n        \"id\": \"c1a9687c-a6d1-4826-92c8-da3139494cc3\",\n        \"visitorName\": \"Eladio Godoy\",\n        \"visitorEmail\": \"eladiogodoy328@gmail.com\",\n        \"visitorPhone\": \"0983921382\",\n        \"status\": 1\n    },\n    \"rooms\": [\n        {\n            \"id\": 6,\n            \"room\": {\n                \"id\": 12,\n                \"roomView\": \"Sea View\",\n                \"roomType\": {\n                    \"id\": 2,\n                    \"name\": \"Senior\",\n                    \"occupants\": 3,\n                    \"beds\": [\n                        {\n                            \"quantity\": 1,\n                            \"bedType\": \"QUEEN\"\n                        },\n                        {\n                            \"quantity\": 1,\n                            \"bedType\": \"SINGLE\"\n                        }\n                    ]\n                }\n            },\n            \"stayFrom\": \"2021-10-24T00:00:00\",\n            \"stayTo\": \"2021-10-25T23:59:59.999999999\",\n            \"status\": 1\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/reservation/modify",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"reservation",
+						"modify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CancelReservation",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/reservation/ec6ba29c-ec39-4579-bb3a-24e4ec677a51/cancel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"reservation",
+						"ec6ba29c-ec39-4579-bb3a-24e4ec677a51",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getReservation",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/reservation/fb804a49-d46c-43bc-b109-6cf1ec1416e4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"reservation",
+						"fb804a49-d46c-43bc-b109-6cf1ec1416e4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HealthCheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/alive",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"alive"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

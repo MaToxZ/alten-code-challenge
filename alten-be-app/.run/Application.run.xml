@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Application" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="db_host" value="localhost:5432" />
+      <env name="db_name" value="alten" />
+      <env name="db_password" value="docker" />
+      <env name="db_username" value="postgres" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.egodoy.alten.challenge.Application" />
+    <module name="alten.challenge" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.egodoy.alten.challenge.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

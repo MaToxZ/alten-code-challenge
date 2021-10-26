@@ -1,0 +1,10 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+alten.challenge,com.egodoy.alten.challenge,Application,37,0,0,0,9,0,3,0,3,0
+alten.challenge,com.egodoy.alten.challenge.controller,RoomController,0,25,0,0,0,7,0,2,0,2
+alten.challenge,com.egodoy.alten.challenge.controller,ReservationController,0,76,0,0,0,21,0,5,0,5
+alten.challenge,com.egodoy.alten.challenge.controller,AliveController,0,12,0,0,0,2,0,2,0,2
+alten.challenge,com.egodoy.alten.challenge.service.serviceImpl,RoomServiceImpl,2,152,1,7,1,36,1,10,0,7
+alten.challenge,com.egodoy.alten.challenge.service.serviceImpl,ReservationServiceImpl,6,363,4,24,2,98,4,21,0,11
+alten.challenge,com.egodoy.alten.challenge.exception,AltenChallengeApiError,0,4,0,0,0,1,0,1,0,1
+alten.challenge,com.egodoy.alten.challenge.utils,Mapper,26,307,16,16,12,98,16,13,0,13
+alten.challenge,com.egodoy.alten.challenge.utils.validator,ReservationDTOValidator,0,301,3,41,0,100,3,23,0,4

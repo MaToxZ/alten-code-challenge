@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Mapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alten.challenge</a> &gt; <a href="index.source.html" class="el_package">com.egodoy.alten.challenge.utils</a> &gt; <span class="el_source">Mapper.java</span></div><h1>Mapper.java</h1><pre class="source lang-java linenums">package com.egodoy.alten.challenge.utils;
+
+import com.egodoy.alten.challenge.model.*;
+import com.egodoy.alten.challenge.model.dto.*;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * Util Class containing the mapping methods to manage the different entities.
+ */
+public class Mapper {
+
+    private Mapper(){
+
+    }
+    public static Room roomDtoToRoom(RoomDTO roomDTO){
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">        if(Objects.nonNull(roomDTO)){</span>
+<span class="fc" id="L21">            return Room.builder()</span>
+<span class="fc" id="L22">                    .roomView(roomDTO.getRoomView())</span>
+<span class="fc" id="L23">                    .roomType(Mapper.roomTypeDtoToRoomType(roomDTO.getRoomType()))</span>
+<span class="fc" id="L24">                    .id(roomDTO.getId())</span>
+<span class="fc" id="L25">                    .build();</span>
+        }
+<span class="nc" id="L27">        return null;</span>
+    }
+
+    public static RoomDTO roomDtoToRoom(Room room){
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        if(Objects.nonNull(room)){</span>
+<span class="fc" id="L32">            return RoomDTO.builder()</span>
+<span class="fc" id="L33">                    .roomView(room.getRoomView())</span>
+<span class="fc" id="L34">                    .roomType(Mapper.roomTypeToRoomTypeDTO(room.getRoomType()))</span>
+<span class="fc" id="L35">                    .id(room.getId())</span>
+<span class="fc" id="L36">                    .build();</span>
+        }
+<span class="nc" id="L38">        return null;</span>
+    }
+
+    public static RoomType roomTypeDtoToRoomType(RoomTypeDTO roomTypeDTO){
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if(Objects.nonNull(roomTypeDTO)){</span>
+<span class="fc" id="L43">            return RoomType.builder()</span>
+<span class="fc" id="L44">                .beds(roomTypeDTO.getBeds().stream()</span>
+<span class="fc" id="L45">                        .map(Mapper::roomTypeBedDtoToRoomTypeBed)</span>
+<span class="fc" id="L46">                        .collect(Collectors.toList())</span>
+                )
+<span class="fc" id="L48">                .id(roomTypeDTO.getId())</span>
+<span class="fc" id="L49">                .name(roomTypeDTO.getName())</span>
+<span class="fc" id="L50">                .occupants(roomTypeDTO.getOccupants())</span>
+<span class="fc" id="L51">                .build();</span>
+        }
+<span class="nc" id="L53">        return null;</span>
+    }
+
+    public static RoomTypeBed roomTypeBedDtoToRoomTypeBed(RoomTypeBedDTO roomTypeBedDTO){
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if(Objects.nonNull(roomTypeBedDTO)){</span>
+<span class="fc" id="L58">            return RoomTypeBed.builder()</span>
+<span class="fc" id="L59">                    .bedType(roomTypeBedDTO.getBedType())</span>
+<span class="fc" id="L60">                    .id(roomTypeBedDTO.getId())</span>
+<span class="fc" id="L61">                    .quantity(roomTypeBedDTO.getQuantity())</span>
+<span class="fc" id="L62">                    .build();</span>
+        }
+<span class="nc" id="L64">        return null;</span>
+    }
+
+    public static RoomTypeDTO roomTypeToRoomTypeDTO(RoomType roomType){
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if(Objects.nonNull(roomType)){</span>
+<span class="fc" id="L69">            return RoomTypeDTO.builder()</span>
+<span class="fc" id="L70">                    .beds(roomType.getBeds().stream()</span>
+<span class="fc" id="L71">                            .map(Mapper::roomTypeBedToRoomTypeBedDto)</span>
+<span class="fc" id="L72">                            .collect(Collectors.toList())</span>
+                    )
+<span class="fc" id="L74">                    .name(roomType.getName())</span>
+<span class="fc" id="L75">                    .occupants(roomType.getOccupants())</span>
+<span class="fc" id="L76">                    .id(roomType.getId())</span>
+<span class="fc" id="L77">                    .build();</span>
+        }
+<span class="nc" id="L79">        return null;</span>
+    }
+
+    public static RoomTypeBedDTO roomTypeBedToRoomTypeBedDto(RoomTypeBed roomTypeBed){
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if(Objects.nonNull(roomTypeBed)){</span>
+<span class="fc" id="L84">            return RoomTypeBedDTO</span>
+<span class="fc" id="L85">                    .builder()</span>
+<span class="fc" id="L86">                    .bedType(roomTypeBed.getBedType())</span>
+<span class="fc" id="L87">                    .quantity(roomTypeBed.getQuantity())</span>
+<span class="fc" id="L88">                    .build();</span>
+        }
+<span class="nc" id="L90">        return null;</span>
+    }
+
+    public static List&lt;ReservationRoom&gt; createReservationRoomsFromDto(List&lt;ReservationRoomDTO&gt; reservationRoomDTOS, Reservation reservation){
+<span class="pc bpc" id="L94" title="2 of 4 branches missed.">        if(Objects.nonNull(reservationRoomDTOS) &amp;&amp; !reservationRoomDTOS.isEmpty()) {</span>
+<span class="fc" id="L95">            return reservationRoomDTOS.stream()</span>
+<span class="fc" id="L96">                    .map(reservationRoomDTO -&gt; Mapper.reservationRoomDtoToEntity(reservationRoomDTO,reservation))</span>
+<span class="fc" id="L97">                    .collect(Collectors.toList());</span>
+        }
+<span class="nc" id="L99">        return Collections.emptyList();</span>
+    }
+
+    public static ReservationRoom reservationRoomDtoToEntity(ReservationRoomDTO reservationRoomDTO, Reservation reservation){
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        if(Objects.nonNull(reservationRoomDTO)){</span>
+<span class="fc" id="L104">            return ReservationRoom.builder()</span>
+<span class="fc" id="L105">                    .reservation(reservation)</span>
+<span class="fc" id="L106">                    .room(Mapper.roomDtoToRoom(reservationRoomDTO.getRoom()))</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">                    .status(Objects.nonNull(reservationRoomDTO.getStatus()) ? reservationRoomDTO.getStatus() : (short) 1)</span>
+<span class="fc" id="L108">                    .id(reservationRoomDTO.getId())</span>
+<span class="fc" id="L109">                    .stayFrom(reservationRoomDTO.getStayFrom().atTime(0,0,0))</span>
+<span class="fc" id="L110">                    .stayTo(reservationRoomDTO.getStayTo().atTime(23,59,59))</span>
+<span class="fc" id="L111">                    .build();</span>
+        }
+<span class="nc" id="L113">        return null;</span>
+    }
+
+    public static ReservationRoomDTO reservationRoomToDto(ReservationRoom reservationRoom){
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if(Objects.nonNull(reservationRoom)){</span>
+<span class="fc" id="L118">            return ReservationRoomDTO.builder()</span>
+<span class="fc" id="L119">                    .room(Mapper.roomDtoToRoom(reservationRoom.getRoom()))</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">                    .status(Objects.nonNull(reservationRoom.getStatus()) ? reservationRoom.getStatus() : (short) 1)</span>
+<span class="fc" id="L121">                    .id(reservationRoom.getId())</span>
+<span class="fc" id="L122">                    .stayFrom(reservationRoom.getStayFrom().toLocalDate())</span>
+<span class="fc" id="L123">                    .stayTo(reservationRoom.getStayTo().toLocalDate())</span>
+<span class="fc" id="L124">                    .build();</span>
+        }
+<span class="nc" id="L126">        return null;</span>
+    }
+
+    public static Reservation reservationDtoToEntity(ReservationDTO reservationDTO){
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">        if (Objects.nonNull(reservationDTO)){</span>
+<span class="fc" id="L131">            return Reservation.builder()</span>
+<span class="fc" id="L132">                    .status(reservationDTO.getStatus())</span>
+<span class="fc" id="L133">                    .visitorPhone(reservationDTO.getVisitorPhone())</span>
+<span class="fc" id="L134">                    .visitorEmail(reservationDTO.getVisitorEmail())</span>
+<span class="fc" id="L135">                    .visitorName(reservationDTO.getVisitorName())</span>
+<span class="fc" id="L136">                    .id(reservationDTO.getId())</span>
+<span class="fc" id="L137">                    .build();</span>
+        }
+<span class="nc" id="L139">        return null;</span>
+    }
+
+    public static BookingDTO reservationToBookingDTO(Reservation reservation){
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">        if(Objects.nonNull(reservation)){</span>
+<span class="fc" id="L144">            return BookingDTO.builder()</span>
+<span class="fc" id="L145">                    .reservation(ReservationDTO.builder()</span>
+<span class="fc" id="L146">                            .id(reservation.getId())</span>
+<span class="fc" id="L147">                            .status(reservation.getStatus())</span>
+<span class="fc" id="L148">                            .visitorEmail(reservation.getVisitorEmail())</span>
+<span class="fc" id="L149">                            .visitorName(reservation.getVisitorName())</span>
+<span class="fc" id="L150">                            .visitorPhone(reservation.getVisitorPhone())</span>
+<span class="fc" id="L151">                            .build()</span>
+                    )
+<span class="fc" id="L153">                    .rooms(reservation.getReservationRooms().stream()</span>
+<span class="fc" id="L154">                            .map(Mapper::reservationRoomToDto)</span>
+<span class="fc" id="L155">                            .collect(Collectors.toList())</span>
+                    )
+<span class="fc" id="L157">                    .build();</span>
+        }
+<span class="nc" id="L159">        return null;</span>
+    }
+
+    public static BookingDTO reservationRoomsToBookingDto(List&lt;ReservationRoom&gt; reservedRooms){
+<span class="pc bpc" id="L163" title="2 of 4 branches missed.">        if(Objects.nonNull(reservedRooms) &amp;&amp; !reservedRooms.isEmpty()){</span>
+<span class="fc" id="L164">            List&lt;ReservationRoomDTO&gt; rooms = reservedRooms.stream()</span>
+<span class="fc" id="L165">                    .map(Mapper::reservationRoomToDto)</span>
+<span class="fc" id="L166">                    .collect(Collectors.toList());</span>
+<span class="fc" id="L167">            return BookingDTO.builder()</span>
+<span class="fc" id="L168">                    .reservation(ReservationDTO.builder()</span>
+<span class="fc" id="L169">                            .visitorName(reservedRooms.get(0).getReservation().getVisitorName())</span>
+<span class="fc" id="L170">                            .visitorEmail(reservedRooms.get(0).getReservation().getVisitorEmail())</span>
+<span class="fc" id="L171">                            .visitorPhone(reservedRooms.get(0).getReservation().getVisitorPhone())</span>
+<span class="fc" id="L172">                            .id(reservedRooms.get(0).getReservation().getId())</span>
+<span class="fc" id="L173">                            .status(reservedRooms.get(0).getReservation().getStatus())</span>
+<span class="fc" id="L174">                            .build()</span>
+                    )
+<span class="fc" id="L176">                    .rooms(rooms)</span>
+<span class="fc" id="L177">                    .build();</span>
+        }
+<span class="nc" id="L179">        return null;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

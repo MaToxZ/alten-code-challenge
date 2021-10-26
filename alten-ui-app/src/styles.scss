@@ -1,0 +1,60 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+//COLORS
+$red-bold: #a32036;
+$red-light: #f1dee1;
+
+$green-bold: #045d67;
+$green-light: #64bfc9;
+$green-sidebar: #009483;
+$green-hover: #154742;
+$green-tab: #019583;
+
+$yellow-bold: #a9ad00;
+$yellow-light: #fff9e9;
+
+$gray-1: #eeeeef;
+$gray-2: #dcddde;
+$gray-3: #a7a9ac;
+$gray-4: #63656a;
+$gray-5: #63656a;
+$gray-6: #63656a;
+$gray-7: #190b0d;
+$gray-8: #08181a;
+
+$white: #ffffff;
+
+$blue-1: #bfeaf5;
+
+
+//SNACKBAR TOAST
+
+.success-colors {
+    background: $green-bold;
+    color: $gray-1;
+  
+    .mat-simple-snackbar-action {
+      color: $white !important;
+    }
+  }
+  
+  .error-colors {
+    background: $red-bold;
+    color: $gray-1;
+  
+    .mat-simple-snackbar-action {
+      color: $white !important;
+    }
+  }
+  
+  .info-colors {
+    background: $gray-1;
+    color: $green-bold;
+  
+    .mat-simple-snackbar-action {
+      color: $green-bold !important;
+    }
+  }

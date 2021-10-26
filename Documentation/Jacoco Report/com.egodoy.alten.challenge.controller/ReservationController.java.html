@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alten.challenge</a> &gt; <a href="index.source.html" class="el_package">com.egodoy.alten.challenge.controller</a> &gt; <span class="el_source">ReservationController.java</span></div><h1>ReservationController.java</h1><pre class="source lang-java linenums">package com.egodoy.alten.challenge.controller;
+
+import com.egodoy.alten.challenge.exception.AltenChallengeApiError;
+import com.egodoy.alten.challenge.exception.AltenChallengeException;
+import com.egodoy.alten.challenge.model.dto.BookingDTO;
+import com.egodoy.alten.challenge.service.ReservationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@CrossOrigin(origins = &quot;*&quot;, allowedHeaders = &quot;*&quot;,
+        methods = {RequestMethod.DELETE,RequestMethod.GET,RequestMethod.HEAD,RequestMethod.PATCH,RequestMethod.OPTIONS
+                ,RequestMethod.POST,RequestMethod.PUT})
+@RequestMapping(&quot;/reservation&quot;)
+public class ReservationController {
+
+    private final ReservationService reservationService;
+
+    @Autowired
+<span class="fc" id="L29">    public ReservationController(ReservationService reservationService){</span>
+<span class="fc" id="L30">        this.reservationService =  reservationService;</span>
+<span class="fc" id="L31">    }</span>
+
+    @Operation( description = &quot;Booking a reservation.&quot;,
+            summary = &quot;Booking desired rooms through a reservation.&quot;)
+    @ApiResponses( value = {
+            @ApiResponse( responseCode = &quot;200&quot;, description = &quot;OK&quot;, content = @Content(mediaType =&quot;application/json&quot;,
+                    schema = @Schema(implementation =  BookingDTO.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid Object / Data provided&quot;, content = @Content(mediaType =&quot;application/json&quot;,
+                    schema = @Schema(implementation =  AltenChallengeApiError.class)))})
+    @PostMapping(&quot;/book&quot;)
+    public ResponseEntity&lt;BookingDTO&gt; book(@RequestBody BookingDTO reservation) throws AltenChallengeException {
+        try {
+<span class="fc" id="L43">            return new ResponseEntity&lt;&gt;(reservationService.book(reservation), HttpStatus.OK);</span>
+<span class="fc" id="L44">        } catch (AltenChallengeException e) {</span>
+<span class="fc" id="L45">            e.getApiError().setEndpoint(&quot;/reservation/book&quot;);</span>
+<span class="fc" id="L46">            throw e;</span>
+        }
+    }
+
+    @Operation( description = &quot;Modifying a reservation.&quot;,
+            summary = &quot;Modifies an existing reservation. Modifications supported are: Room cancellation, Room Stay Dates.&quot;)
+    @ApiResponses( value = {
+            @ApiResponse( responseCode = &quot;200&quot;, description = &quot;OK&quot;, content = @Content(mediaType =&quot;application/json&quot;,
+                    schema = @Schema(implementation =  BookingDTO.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid Object / Data provided&quot;, content = @Content(mediaType =&quot;application/json&quot;,
+                    schema = @Schema(implementation =  AltenChallengeApiError.class)))})
+    @PatchMapping(&quot;/modify&quot;)
+    public ResponseEntity&lt;BookingDTO&gt; modifyReservation(@RequestBody BookingDTO reservation) throws AltenChallengeException {
+        try {
+<span class="fc" id="L60">            return new ResponseEntity&lt;&gt;(reservationService.modifyReservation(reservation), HttpStatus.OK);</span>
+<span class="fc" id="L61">        } catch (AltenChallengeException e) {</span>
+<span class="fc" id="L62">            e.getApiError().setEndpoint(&quot;/reservation/modify&quot;);</span>
+<span class="fc" id="L63">            throw e;</span>
+        }
+    }
+
+    @Operation( description = &quot;Cancelling a reservation.&quot;,
+            summary = &quot;Cancel an existing and active reservation&quot;)
+    @ApiResponses( value = {
+            @ApiResponse( responseCode = &quot;200&quot;, description = &quot;Reservation Cancelled successfully&quot;, content = @Content(mediaType =&quot;text/plan&quot;,
+                    schema = @Schema(implementation =  String.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid reservationId provided&quot;, content = @Content(mediaType =&quot;application/json&quot;,
+                    schema = @Schema(implementation =  AltenChallengeApiError.class)))})
+    @DeleteMapping(&quot;/{id}/cancel&quot;)
+    public ResponseEntity&lt;String&gt; cancelReservation(@PathVariable UUID id) throws AltenChallengeException {
+        try {
+<span class="fc" id="L77">            reservationService.cancelReservation(id);</span>
+<span class="fc" id="L78">            return new ResponseEntity&lt;&gt;(&quot;Reservation Cancelled successfully&quot;, HttpStatus.OK);</span>
+<span class="fc" id="L79">        } catch (AltenChallengeException e) {</span>
+<span class="fc" id="L80">            e.getApiError().setEndpoint(&quot;/reservation/cancel&quot;);</span>
+<span class="fc" id="L81">            throw e;</span>
+        }
+    }
+
+    @Operation( description = &quot;Retrieving a reservation.&quot;,
+            summary = &quot;Retrieves an existing and active reservation&quot;)
+    @ApiResponses( value = {
+            @ApiResponse( responseCode = &quot;200&quot;, description = &quot;OK&quot;, content = @Content(mediaType =&quot;application/json&quot;,
+                    schema = @Schema(implementation =  BookingDTO.class))),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid reservationId provided&quot;, content = @Content(mediaType =&quot;application/json&quot;,
+                    schema = @Schema(implementation =  AltenChallengeApiError.class)))})
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;BookingDTO&gt; getReservation(@PathVariable UUID id) throws AltenChallengeException {
+        try {
+<span class="fc" id="L95">            BookingDTO reservation = reservationService.getReservation(id);</span>
+<span class="fc" id="L96">            return new ResponseEntity&lt;&gt;(reservation, HttpStatus.OK);</span>
+<span class="fc" id="L97">        } catch (AltenChallengeException e) {</span>
+<span class="fc" id="L98">            e.getApiError().setEndpoint(&quot;/reservation/&quot;.concat(id.toString()));</span>
+<span class="fc" id="L99">            throw e;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

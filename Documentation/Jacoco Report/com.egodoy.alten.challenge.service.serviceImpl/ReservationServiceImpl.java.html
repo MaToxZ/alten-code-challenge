@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alten.challenge</a> &gt; <a href="index.source.html" class="el_package">com.egodoy.alten.challenge.service.serviceImpl</a> &gt; <span class="el_source">ReservationServiceImpl.java</span></div><h1>ReservationServiceImpl.java</h1><pre class="source lang-java linenums">package com.egodoy.alten.challenge.service.serviceImpl;
+
+import com.egodoy.alten.challenge.exception.AltenChallengeApiError;
+import com.egodoy.alten.challenge.exception.AltenChallengeException;
+import com.egodoy.alten.challenge.model.Reservation;
+import com.egodoy.alten.challenge.model.ReservationRoom;
+import com.egodoy.alten.challenge.model.dto.BookingDTO;
+import com.egodoy.alten.challenge.model.dto.ReservationRoomDTO;
+import com.egodoy.alten.challenge.repository.ReservationRepository;
+import com.egodoy.alten.challenge.repository.ReservationRoomRepository;
+import com.egodoy.alten.challenge.service.ReservationService;
+import com.egodoy.alten.challenge.utils.Mapper;
+import com.egodoy.alten.challenge.utils.validator.ReservationDTOValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+public class ReservationServiceImpl implements ReservationService {
+
+    private final ReservationRepository reservationRepository;
+
+    private final ReservationRoomRepository reservationRoomRepository;
+
+    @Autowired
+<span class="fc" id="L32">    public ReservationServiceImpl(ReservationRepository reservationRepository, ReservationRoomRepository reservationRoomRepository){</span>
+<span class="fc" id="L33">        this.reservationRepository = reservationRepository;</span>
+<span class="fc" id="L34">        this.reservationRoomRepository = reservationRoomRepository;</span>
+<span class="fc" id="L35">    }</span>
+
+    /**
+     * This method is supposed to perform validations over the provided reservation object
+     * if everything with provided dates, availability of the selected rooms among other validations are ok
+     * a new Reservation will be booked. Otherwise, will return a Bad Request response describing the issue. If a
+     * reservationId is provided this request is automatically redirected to ModifyReservation method.
+     * @param reservation Reservation object containing all the details to be booked
+     * @return saved reservation object
+     * @throws AltenChallengeException If validations fail
+     */
+    @Override
+    public BookingDTO book(BookingDTO reservation) throws AltenChallengeException {
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        if(ReservationDTOValidator.validateReservationDto(reservation)){</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">            if(Objects.nonNull(reservation.getReservation().getId())){</span>
+<span class="nc" id="L50">                return this.modifyReservation(reservation);</span>
+            }else{
+<span class="fc" id="L52">                List&lt;ReservationRoomDTO&gt; overlapRooms = reservation.getRooms().stream()</span>
+<span class="fc" id="L53">                        .map(reservationRoomDTO -&gt; {</span>
+<span class="fc" id="L54">                            reservationRoomDTO.setId(null);</span>
+<span class="fc" id="L55">                            return reservationRoomDTO;</span>
+                        })
+<span class="fc" id="L57">                        .filter(this::validateRoomOverlaps)</span>
+<span class="fc" id="L58">                        .collect(Collectors.toList());</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">                if(overlapRooms.isEmpty()){</span>
+<span class="fc" id="L60">                    Reservation savedReservation = reservationRepository.saveAndFlush(Mapper.reservationDtoToEntity(reservation.getReservation()));</span>
+<span class="fc" id="L61">                    List&lt;ReservationRoom&gt; reservationRooms = Mapper.createReservationRoomsFromDto(reservation.getRooms(), savedReservation);</span>
+<span class="fc" id="L62">                    return Mapper.reservationRoomsToBookingDto(reservationRoomRepository.saveAll(reservationRooms));</span>
+                }
+            }
+        }
+<span class="fc" id="L66">        throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L67">                .message(&quot;There was an issue trying to book the reservation&quot;)</span>
+<span class="fc" id="L68">                .debugMessage(&quot;One of the rooms selected is already booked&quot;)</span>
+<span class="fc" id="L69">                .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L70">                .build()</span>
+        );
+    }
+
+    /**
+     * This method is supposed to modify a given reservation, after validations as existing of the provided reservation,
+     * availability of room stay dates in case these were changed or added, provided dates, etc. If validations confirm
+     * that modification is possible, the provided reservation will be modified. Otherwise, will return a Bad Request
+     * response describing the issue. Modifications supported are reservation
+     * status, room stay dates, room reservation status.
+     * @param reservation Reservation Object containing modifications
+     * @return modified reservation object
+     * @throws AltenChallengeException If validations fail
+     */
+    @Override
+    public BookingDTO modifyReservation(BookingDTO reservation) throws AltenChallengeException {
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if(ReservationDTOValidator.validateReservationDto(reservation)){</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            if(Objects.nonNull(reservation.getReservation().getId())){</span>
+<span class="fc" id="L88">                Optional&lt;Reservation&gt; reservationEntity = reservationRepository.findByIdAndStatus(reservation.getReservation().getId(), (short) 1);</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">                if(reservationEntity.isPresent()){</span>
+<span class="fc" id="L90">                    reservationEntity.get().setStatus(reservation.getReservation().getStatus());</span>
+<span class="fc" id="L91">                    reservationEntity = Optional.of(reservationRepository.saveAndFlush(reservationEntity.get()));</span>
+<span class="fc" id="L92">                    List&lt;ReservationRoomDTO&gt; overlapRooms = reservation.getRooms().stream()</span>
+<span class="fc" id="L93">                            .filter(this::validateRoomModifyOverlaps)</span>
+<span class="fc" id="L94">                            .collect(Collectors.toList());</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">                    if(overlapRooms.isEmpty()) {</span>
+<span class="fc" id="L96">                        List&lt;ReservationRoom&gt; reservationRooms = Mapper.createReservationRoomsFromDto(reservation.getRooms(),reservationEntity.get());</span>
+<span class="fc" id="L97">                        return Mapper.reservationRoomsToBookingDto(reservationRoomRepository.saveAll(modifyReservationRooms(reservationRooms)));</span>
+                    }
+<span class="fc" id="L99">                    throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L100">                            .message(&quot;There was an issue trying to modify the reservation&quot;)</span>
+<span class="fc" id="L101">                            .debugMessage(&quot;One of the rooms selected is already booked&quot;)</span>
+<span class="fc" id="L102">                            .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L103">                            .build());</span>
+                }else{
+<span class="fc" id="L105">                    throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L106">                            .message(&quot;There was an issue trying to modify the reservation&quot;)</span>
+<span class="fc" id="L107">                            .debugMessage(&quot;Provided reservation id was not found in the system&quot;)</span>
+<span class="fc" id="L108">                            .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L109">                            .build());</span>
+                }
+            }else{
+<span class="fc" id="L112">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L113">                        .message(&quot;There was an issue trying to modify the reservation&quot;)</span>
+<span class="fc" id="L114">                        .debugMessage(&quot;You're trying to modify an reservation but not reservationId was provided&quot;)</span>
+<span class="fc" id="L115">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L116">                        .build());</span>
+            }
+        }
+<span class="nc" id="L119">        return null;</span>
+    }
+
+    /**
+     * This method is supposed to cancel a reservation based on a given reservationId, if the reservation is found
+     * in the system, the reservation will be cancelled. Otherwise, will return a Bad Request response describing the issue.
+     * @param reservationId Reservation Id to be cancelled
+     * @throws AltenChallengeException If validations fail
+     */
+    @Override
+    public void cancelReservation(UUID reservationId) throws AltenChallengeException {
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if(Objects.nonNull(reservationId)){</span>
+<span class="fc" id="L131">            Optional&lt;Reservation&gt; reservationEntity = reservationRepository.findById(reservationId);</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">            if(reservationEntity.isPresent()){</span>
+<span class="fc" id="L133">                reservationEntity.get().setStatus((short) 0);</span>
+<span class="fc" id="L134">                reservationEntity.get().getReservationRooms().stream()</span>
+<span class="fc" id="L135">                                .forEach(reservationRoom -&gt; {</span>
+<span class="fc" id="L136">                                    reservationRoom.setStatus((short) 0);</span>
+<span class="fc" id="L137">                                });</span>
+<span class="fc" id="L138">                reservationRepository.saveAndFlush(reservationEntity.get());</span>
+            }else{
+<span class="fc" id="L140">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L141">                        .message(&quot;There was an issue trying to cancel the reservation&quot;)</span>
+<span class="fc" id="L142">                        .debugMessage(&quot;Provided reservation id was not found in the system&quot;)</span>
+<span class="fc" id="L143">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L144">                        .build());</span>
+            }
+<span class="fc" id="L146">        }else{</span>
+<span class="fc" id="L147">            throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L148">                    .message(&quot;There was an issue trying to cancel the reservation&quot;)</span>
+<span class="fc" id="L149">                    .debugMessage(&quot;No reservation ID was provided&quot;)</span>
+<span class="fc" id="L150">                    .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L151">                    .build());</span>
+        }
+<span class="fc" id="L153">    }</span>
+
+    /**
+     * This methods retrieves a reservation based on the reservationId provided. The reservation needs to exist and be
+     * active. Otherwise, will return a Bad Request response describing the issue.
+     * @param reservationId Reservation Id to be retrieved
+     * @return Object containing all the reservation details
+     * @throws AltenChallengeException if validations fail
+     */
+    @Override
+    public BookingDTO getReservation(UUID reservationId) throws AltenChallengeException {
+<span class="fc bfc" id="L164" title="All 2 branches covered.">        if(Objects.nonNull(reservationId)){</span>
+<span class="fc" id="L165">            Optional&lt;Reservation&gt; reservationEntity = reservationRepository.findByIdAndStatus(reservationId, (short) 1);</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">            if(reservationEntity.isPresent()){</span>
+<span class="fc" id="L167">                return Mapper.reservationToBookingDTO(reservationEntity.get());</span>
+            }else{
+<span class="fc" id="L169">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L170">                        .message(&quot;There was an issue trying to get the reservation&quot;)</span>
+<span class="fc" id="L171">                        .debugMessage(&quot;Provided reservation id was not found in the system&quot;)</span>
+<span class="fc" id="L172">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L173">                        .build());</span>
+            }
+        }else{
+<span class="fc" id="L176">            throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L177">                    .message(&quot;There was an issue trying to get the reservation&quot;)</span>
+<span class="fc" id="L178">                    .debugMessage(&quot;No reservation ID was provided&quot;)</span>
+<span class="fc" id="L179">                    .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L180">                    .build());</span>
+        }
+    }
+
+    private boolean validateRoomOverlaps(ReservationRoomDTO room){
+<span class="fc" id="L185">        List&lt;ReservationRoom&gt; overLaps = reservationRoomRepository.findByRoomsAndDates(room.getRoom().getId(),</span>
+<span class="fc" id="L186">                room.getStayFrom().atTime(0,0,0),room.getStayTo().atTime(23,59,59));</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        return overLaps.isEmpty() ? false : true;</span>
+    }
+
+    private boolean validateRoomModifyOverlaps(ReservationRoomDTO room){
+<span class="fc" id="L191">        List&lt;ReservationRoom&gt; overLaps = reservationRoomRepository.findByIdAndRoomsAndDates(room.getId(),room.getRoom().getId(),</span>
+<span class="fc" id="L192">                room.getStayFrom().atTime(0,0,0),room.getStayTo().atTime(23,59,59));</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        return overLaps.isEmpty() ? false : true;</span>
+    }
+
+    private List&lt;ReservationRoom&gt; modifyReservationRooms(List&lt;ReservationRoom&gt; reservationRooms) {
+<span class="fc" id="L197">        return reservationRooms.stream()</span>
+<span class="fc" id="L198">                .map(reservationRoom -&gt; {</span>
+<span class="fc" id="L199">                    Optional&lt;ReservationRoom&gt; savedReservation = reservationRoomRepository.findByReservationIdAndRoomId(reservationRoom.getReservation().getId(),</span>
+<span class="fc" id="L200">                            reservationRoom.getRoom().getId());</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">                    if (savedReservation.isPresent()) {</span>
+<span class="fc" id="L202">                        reservationRoom.setId(savedReservation.get().getId());</span>
+<span class="fc" id="L203">                        reservationRoom.setRoom(savedReservation.get().getRoom());</span>
+                    }
+<span class="fc" id="L205">                    return reservationRoom;</span>
+                })
+<span class="fc" id="L207">                .collect(Collectors.toList());</span>
+
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

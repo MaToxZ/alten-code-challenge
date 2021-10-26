@@ -1,0 +1,39 @@
+<div *ngIf="operation == 'visitorInfo'">
+    <h1 mat-dialog-title>Booking</h1>
+    <div mat-dialog-content [formGroup]="visitorGroup">
+    <p>Visitor Information</p>
+    <mat-form-field appearance="outline">
+        <mat-label>Name:</mat-label>
+        <input matInput formControlName="name">
+    </mat-form-field>
+    <p></p>
+    <mat-form-field appearance="outline">
+        <mat-label>Email:</mat-label>
+        <input matInput formControlName="email">
+    </mat-form-field>
+    <p></p>
+    <mat-form-field appearance="outline">
+        <mat-label>Phone:</mat-label>
+        <input matInput formControlName="phone">
+    </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-button (click)="closeModal()" [disabled]="visitorGroup.invalid" cdkFocusInitial>Ok</button>
+    </div>
+</div>
+<div *ngIf="operation == 'availability'">
+    <div class="row mat-card-content-row-spacer">
+        <div class="col">
+          <mat-form-field appearance="outline">
+              <mat-label>Enter a date range</mat-label>
+              <mat-date-range-input [dateFilter]="myDateFilter" [formGroup]="availabilityRange" [rangePicker]="roomAvailabilityPicker">
+                <input matStartDate formControlName="start" formControlName="start" placeholder="Start date">
+                <input matEndDate formControlName="end" (dateChange)="dateRangeChange(availabilityRange)" placeholder="End date">
+              </mat-date-range-input>
+              <mat-datepicker-toggle matSuffix [for]="roomAvailabilityPicker"></mat-datepicker-toggle>
+              <mat-date-range-picker #roomAvailabilityPicker></mat-date-range-picker>
+            </mat-form-field>
+        </div>
+    </div>
+</div>

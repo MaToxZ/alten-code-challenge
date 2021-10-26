@@ -1,0 +1,87 @@
+<mat-card *ngIf="room">
+  <mat-card-header>
+    <mat-card-title>
+      <div class="row">
+        <div class="col">
+          <mat-checkbox *ngIf="this.reservationRange.valid" class="example-margin" (change)=selectionChanged($event)>
+          </mat-checkbox>
+          {{room.roomType.name}}
+        </div>
+      </div>      
+    </mat-card-title>
+    <mat-card-subtitle>
+      <span>{{'View: ' + room.roomView + ' Max Occupants: ' + room.roomType.occupants}}</span>
+      <mat-grid-list cols="4" rowHeight="1rem">
+        <mat-grid-tile
+            *ngFor="let bed of room.roomType.beds"
+            [colspan]="2"
+            [rowspan]="2"
+        >
+            <mat-icon mat-list-icon>bed</mat-icon>
+            <div class="icon-text-space" mat-line>{{bed.quantity + ' ' + bed.bedType}}</div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <img
+    mat-card-image
+    [src]="imageSrc"
+    alt="Room Picture"
+    width="1rem"
+  />
+  <mat-card-content>
+    <div class="row" *ngIf="reservationRoom">
+      <div class="col">
+        <mat-grid-list cols="4" rowHeight="1rem">
+          <mat-grid-tile
+              [colspan]="2"
+              [rowspan]="2"
+          >
+              <mat-icon mat-list-icon>calendar_today</mat-icon>
+              <div class="icon-text-space" mat-line>{{'  From: ' + reservationRoom.stayFrom}}</div>
+          </mat-grid-tile>
+          <mat-grid-tile
+              [colspan]="2"
+              [rowspan]="2"
+          >
+              <mat-icon mat-list-icon>calendar_today</mat-icon>
+              <div class="icon-text-space" mat-line>{{'  To: ' + reservationRoom.stayTo}}</div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
+    </div>
+    <div class="row" *ngIf="roomAvailability && roomAvailability.availableDates && roomAvailability.availableDates.length > 0">
+      <div class="col">
+          <mat-form-field class="example-full-width w-100" appearance="outline">
+            <mat-label>Select Reservation Period</mat-label>
+            <mat-date-range-input [dateFilter]="myDateFilter" [formGroup]="reservationRange" [rangePicker]="reservationPeriodPicker">
+              <input matStartDate formControlName="start" placeholder="From date">
+              <input matEndDate formControlName="end" placeholder="To date" (dateChange)="dateRangeChange(reservationRange)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="reservationPeriodPicker">
+              <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+            </mat-datepicker-toggle>
+            <mat-date-range-picker #reservationPeriodPicker></mat-date-range-picker>
+            
+            <!-- Required Date Messages -->
+            <mat-error *ngIf="reservationRange.controls.start.errors?.required">From Date Required</mat-error>
+            <mat-error *ngIf="reservationRange.controls.end.errors?.required">To Date Required</mat-error>
+            <mat-error *ngIf="reservationRange.controls.end.errors?.overlaps && reservationRange.controls.end.errors?.overlaps">
+              {{'There are overlap dates in your range selection: ' + overlapsDateStringList}}
+            </mat-error>
+          </mat-form-field>
+      </div>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <div class="row">
+        <div class="col-md-9"></div>
+        <div class="col">
+          <button *ngIf="reservationRoom && roomAvailability && roomAvailability.availableDates && roomAvailability.availableDates.length > 0" 
+            (click)="modifyReservation()" [disabled]="reservationRange.invalid" mat-raised-button>Update Reservation</button>
+          <button *ngIf="reservationRoom && !roomAvailability?.availableDates " (click)="searchRoomAvailability()" mat-raised-button>Modify Room</button>
+          <button *ngIf="reservationRoom" mat-raised-button color="warn" (click)="cancelReservation()" mat-button>Cancel Room</button>
+        </div>
+    </div>
+  </mat-card-actions>
+</mat-card>

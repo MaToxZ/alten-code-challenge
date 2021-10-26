@@ -1,0 +1,35 @@
+<mat-card class="container">
+    <mat-card-header>
+      <mat-card-title>Search for Availability:</mat-card-title>
+      <mat-card-subtitle></mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content style="padding: 1rem;">
+        <div class="row mat-card-content-row-spacer">
+            <div class="col">
+              <span>Select the date range you're looking room for</span> 
+            </div>
+        </div>
+        <div class="row mat-card-content-row-spacer">
+            <div class="col">
+              <mat-form-field appearance="outline">
+                  <mat-label>Enter a date range</mat-label>
+                  <mat-date-range-input [dateFilter]="myDateFilter" [formGroup]="availabilityRange" [rangePicker]="roomAvailabilityPicker">
+                    <input matStartDate formControlName="start" formControlName="start" placeholder="Start date">
+                    <input matEndDate formControlName="end" placeholder="End date">
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matSuffix [for]="roomAvailabilityPicker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #roomAvailabilityPicker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
+            <div class="col-md-auto" *ngIf="booking && booking.rooms && booking.rooms.length > 0">
+              <button mat-raised-button color="primary" (click)="bookReservation()">Book Selected Rooms</button>
+            </div>
+        </div>
+        <div class="row mat-card-content-row-spacer rooms-container overflow-auto">
+            <div class="col-md-5" *ngFor="let room of roomsAvailables">
+              <app-room-availability-card [roomAvailability]="room" (reservationChange)="handleReservationChange($event)"></app-room-availability-card>
+            </div>
+        </div>
+    </mat-card-content>
+  </mat-card>

@@ -1,0 +1,27 @@
+:host ::ng-deep{
+    .mat-calendar-body-cell.selected{
+        background-color: #3f51b5;
+        border-radius: 50%;
+    }
+    .mat-calendar-body-cell.selected .mat-calendar-body-cell-content{
+        color: #fff;
+    }
+}
+
+.room-availability-calendar{
+    width: 75%;
+}
+
+.mat-card{
+    margin-bottom: 1rem;
+}
+
+.icon-text-space{
+    margin-left: 0.5rem;
+}
+
+/* mat-card img{
+    object-fit: cover; //this makes the image in src fit to the size specified below
+    width: 50%; //Here you can use wherever you want to specify the width and also the height of the <img>
+    height: 30%;
+  } */

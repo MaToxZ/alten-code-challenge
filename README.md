@@ -1,6 +1,6 @@
 ## Alten code challenge
 
-###Overview
+### Overview
 
 Implementation a booking API for the very last hotel in Cancun assuming the scenario of Post-Covid situation. People are now free to travel everywhere but because of the pandemic, a lot of hotels went bankrupt. Some former famous travel places are left with only one hotel. Taking in count the following requirements:
 - API will be maintained by the hotel’s IT department.

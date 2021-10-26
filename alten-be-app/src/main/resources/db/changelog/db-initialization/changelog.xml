@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <!--  Main Tables Creation -->
+    <changeSet id="room_type_table_DDL" author="egodoy" failOnError="true">
+        <comment>Room Type Table Definition</comment>
+        <sqlFile path="room_type_table_DDL.sql" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="room_type_bed_DDL" author="egodoy" failOnError="true">
+        <comment>Room Type Bed Table Definition</comment>
+        <sqlFile path="room_type_bed_DDL.sql" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="room_table_DDL" author="egodoy" failOnError="true">
+        <comment>Room Table Definition</comment>
+        <sqlFile path="room_table_DDL.sql" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="reservation_table_DDL" author="egodoy" failOnError="true">
+        <comment>Reservation Table Definition</comment>
+        <sqlFile path="reservation_table_DDL.sql" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="reservation_room_table_DDL" author="egodoy" failOnError="true">
+        <comment>Reservation Room Table Definition</comment>
+        <sqlFile path="reservation_room_table_DDL.sql" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="at_reservation_table_DDL" author="egodoy" failOnError="true">
+        <comment>Reservation Audit Table Definition</comment>
+        <sqlFile path="at_reservation_table_DDL.sql" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="at_reservation_room_table_DDL" author="egodoy" failOnError="true">
+        <comment>Reservation Room Audit Table Definition</comment>
+        <sqlFile path="at_reservation_room_table_DDL.sql" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <!-- Audit Functions Definition -->
+
+    <changeSet id="reservation_audit_function" author="egodoy" failOnError="true">
+        <comment>Reservation Audit Function Definition</comment>
+        <sqlFile path="reservation_audit_function.sql" splitStatements="false" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="reservation_room_audit_function" author="egodoy" failOnError="true">
+        <comment>Reservation Room Audit Function Definition</comment>
+        <sqlFile path="reservation_room_audit_function.sql" splitStatements="false" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <!-- Triggers Definition -->
+    <changeSet id="t_reservation_audit_table" author="egodoy" failOnError="true">
+        <comment>Reservation Audit Trigger Definition</comment>
+        <sqlFile path="t_reservation_audit_table.sql" splitStatements="false" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="t_reservation_room_audit_table" author="egodoy" failOnError="true">
+        <comment>Reservation Room Audit Trigger Definition</comment>
+        <sqlFile path="t_reservation_room_audit_table.sql" splitStatements="false" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+    <!-- Database Initialization Bulk (DML) -->
+    <changeSet id="Initialization_DML" author="egodoy" failOnError="true">
+        <comment>Database Initialization</comment>
+        <sqlFile path="Initialization_DML.sql" relativeToChangelogFile="true" endDelimiter=";" encoding="UTF-8"/>
+    </changeSet>
+
+
+</databaseChangeLog>

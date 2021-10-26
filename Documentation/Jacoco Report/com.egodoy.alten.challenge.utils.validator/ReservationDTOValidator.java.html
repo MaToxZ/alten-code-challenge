@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationDTOValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">alten.challenge</a> &gt; <a href="index.source.html" class="el_package">com.egodoy.alten.challenge.utils.validator</a> &gt; <span class="el_source">ReservationDTOValidator.java</span></div><h1>ReservationDTOValidator.java</h1><pre class="source lang-java linenums">package com.egodoy.alten.challenge.utils.validator;
+
+import com.egodoy.alten.challenge.exception.AltenChallengeApiError;
+import com.egodoy.alten.challenge.exception.AltenChallengeException;
+import com.egodoy.alten.challenge.model.dto.BookingDTO;
+import com.egodoy.alten.challenge.model.dto.ReservationRoomDTO;
+import org.springframework.http.HttpStatus;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Validator Class that handle date validations to avoid bad data to be persisted
+ */
+public class ReservationDTOValidator {
+    private static final String errorMessage = &quot;There was an issue in the request&quot;;
+
+    private ReservationDTOValidator(){
+
+    }
+
+    /**
+     * This method validates if the provided reservation object contains the appropriate date data for booking reservation
+     * @param reservationDTO object containing reservation related details
+     * @return TRUE if everything goes well
+     * @throws AltenChallengeException If validations fail
+     */
+    public static boolean validateReservationDto(BookingDTO reservationDTO) throws AltenChallengeException {
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if(Objects.nonNull(reservationDTO)){</span>
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">            if(validateReservationObject(reservationDTO)) {</span>
+<span class="fc" id="L33">                List&lt;ReservationRoomDTO&gt; rooms = reservationDTO.getRooms();</span>
+<span class="pc bpc" id="L34" title="1 of 4 branches missed.">                if (Objects.nonNull(rooms) &amp;&amp; !rooms.isEmpty()) {</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">                    for (int i = 0; i &lt; rooms.size(); i++) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">                        if (Objects.nonNull(rooms.get(i).getRoom().getId())) {</span>
+<span class="fc" id="L37">                            validateFromToDatesForBooking(rooms.get(i).getStayFrom(), rooms.get(i).getStayTo());</span>
+                        } else {
+<span class="fc" id="L39">                            throw new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L40">                                    .message(errorMessage)</span>
+<span class="fc" id="L41">                                    .debugMessage(&quot;Some of the provided rooms are invalid&quot;)</span>
+<span class="fc" id="L42">                                    .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L43">                                    .build()</span>
+                            );
+                        }
+                    }
+                }else{
+<span class="fc" id="L48">                    throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L49">                            .message(errorMessage)</span>
+<span class="fc" id="L50">                            .debugMessage(&quot;You need to provide at least a room to book&quot;)</span>
+<span class="fc" id="L51">                            .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L52">                            .build()</span>
+                    );
+                }
+<span class="fc" id="L55">            }</span>
+        }else{
+<span class="fc" id="L57">            throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L58">                    .message(errorMessage)</span>
+<span class="fc" id="L59">                    .debugMessage(&quot;No reservation object provided&quot;)</span>
+<span class="fc" id="L60">                    .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L61">                    .build()</span>
+            );
+        }
+<span class="fc" id="L64">        return true;</span>
+    }
+
+    /**
+     * This methods validates date validity and constraints
+     * @param from when the reservation starts
+     * @param to when the reservation ends
+     * @return TRUE if everything goes well
+     * @throws AltenChallengeException if validations fail
+     */
+    public static boolean validateFromToDatesForBooking(LocalDate from, LocalDate to) throws AltenChallengeException {
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if(validateFromToDates(from,to)){</span>
+<span class="fc" id="L76">            LocalDate now = LocalDate.now();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">            if(ChronoUnit.DAYS.between(from,to) &gt; 3){</span>
+<span class="fc" id="L78">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L79">                        .message(errorMessage)</span>
+<span class="fc" id="L80">                        .debugMessage(&quot;Invalid 'to' date provided for booking: Stay period for reservation cannot be more than 3 days&quot;)</span>
+<span class="fc" id="L81">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L82">                        .build()</span>
+                );
+            }
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if(ChronoUnit.DAYS.between(now,from) &gt; 30){</span>
+<span class="fc" id="L86">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L87">                        .message(errorMessage)</span>
+<span class="fc" id="L88">                        .debugMessage(&quot;Invalid 'From' date provided for booking: You cannot book for more than 30 days in advance&quot;)</span>
+<span class="fc" id="L89">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L90">                        .build()</span>
+                );
+            }
+        }
+<span class="fc" id="L94">        return true;</span>
+    }
+
+    /**
+     * Generic Date validations around the allowed queries that the system supports
+     * @param from Beginning of stay date, it might be for booking or searching availability
+     * @param to Ending of the stay date, it might be for booking or searching availability
+     * @return TRUE if everything goes well
+     * @throws AltenChallengeException if Validation fail
+     */
+    public static boolean validateFromToDates(LocalDate from, LocalDate to) throws AltenChallengeException {
+<span class="fc bfc" id="L105" title="All 4 branches covered.">        if(Objects.nonNull(from) &amp;&amp; Objects.nonNull(to)){</span>
+<span class="fc" id="L106">            LocalDate now = LocalDate.now();</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">            if(from.isBefore(now))</span>
+<span class="fc" id="L108">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L109">                        .message(errorMessage)</span>
+<span class="fc" id="L110">                        .debugMessage(&quot;Invalid 'from' date provided: 'From' date cannot be before than today&quot;)</span>
+<span class="fc" id="L111">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L112">                        .build()</span>
+                );
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            if(from.isEqual(now))</span>
+<span class="fc" id="L115">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L116">                        .message(errorMessage)</span>
+<span class="fc" id="L117">                        .debugMessage(&quot;Invalid 'from' date provided: 'From' date has to be at least tomorrow&quot;)</span>
+<span class="fc" id="L118">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L119">                        .build()</span>
+                );
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            if(to.isBefore(now))</span>
+<span class="fc" id="L122">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L123">                        .message(errorMessage)</span>
+<span class="fc" id="L124">                        .debugMessage(&quot;Invalid 'to' date provided: 'To' date cannot be before than today&quot;)</span>
+<span class="fc" id="L125">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L126">                        .build()</span>
+                );
+<span class="fc bfc" id="L128" title="All 2 branches covered.">            if(to.isBefore(from)){</span>
+<span class="fc" id="L129">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L130">                        .message(errorMessage)</span>
+<span class="fc" id="L131">                        .debugMessage(&quot;Invalid 'to' date provided: 'To' date cannot be before than 'From'&quot;)</span>
+<span class="fc" id="L132">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L133">                        .build()</span>
+                );
+            }
+<span class="fc" id="L136">        }else {</span>
+<span class="fc" id="L137">            throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L138">                    .message(errorMessage)</span>
+<span class="fc" id="L139">                    .debugMessage(&quot;Invalid date range provided: You need to provide both 'From' and 'To' for this action&quot;)</span>
+<span class="fc" id="L140">                    .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L141">                    .build()</span>
+            );
+        }
+<span class="fc" id="L144">        return true;</span>
+    }
+
+    /**
+     * This methods validate that a BookingDto has the visitor information before proceeding to place the reservation
+     * @param reservation BookingDTO object containing reservation details
+     * @return True if everything goes well
+     * @throws AltenChallengeException if validations fail
+     */
+    public static boolean validateReservationObject(BookingDTO reservation) throws AltenChallengeException {
+
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        if(Objects.nonNull(reservation.getReservation())){</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            if(Objects.isNull(reservation.getReservation().getVisitorEmail())</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">                    || reservation.getReservation().getVisitorEmail().isEmpty()){</span>
+<span class="fc" id="L158">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L159">                        .message(errorMessage)</span>
+<span class="fc" id="L160">                        .debugMessage(&quot;Invalid Reservation: You need to provide the 'visitorEmail'&quot;)</span>
+<span class="fc" id="L161">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L162">                        .build()</span>
+                );
+            }
+<span class="fc bfc" id="L165" title="All 2 branches covered.">            if(Objects.isNull(reservation.getReservation().getVisitorName())</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">                    || reservation.getReservation().getVisitorName().isEmpty()){</span>
+<span class="fc" id="L167">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L168">                        .message(errorMessage)</span>
+<span class="fc" id="L169">                        .debugMessage(&quot;Invalid Reservation: You need to provide the 'visitorName'&quot;)</span>
+<span class="fc" id="L170">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L171">                        .build()</span>
+                );
+            }
+<span class="fc bfc" id="L174" title="All 2 branches covered.">            if(Objects.isNull(reservation.getReservation().getVisitorPhone())</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">                    || reservation.getReservation().getVisitorPhone().isEmpty()){</span>
+<span class="fc" id="L176">                throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L177">                        .message(errorMessage)</span>
+<span class="fc" id="L178">                        .debugMessage(&quot;Invalid Reservation: You need to provide the 'visitorPhone'&quot;)</span>
+<span class="fc" id="L179">                        .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L180">                        .build()</span>
+                );
+            }
+<span class="fc" id="L183">            return true;</span>
+        }
+
+<span class="fc" id="L186">        throw  new AltenChallengeException(AltenChallengeApiError.builder()</span>
+<span class="fc" id="L187">                .message(errorMessage)</span>
+<span class="fc" id="L188">                .debugMessage(&quot;Invalid Reservation: You need to provide Reservation object containing Visitor Information&quot;)</span>
+<span class="fc" id="L189">                .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L190">                .build()</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

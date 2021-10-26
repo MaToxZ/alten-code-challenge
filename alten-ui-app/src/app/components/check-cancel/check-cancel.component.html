@@ -1,0 +1,63 @@
+<mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Search For a reservation:</mat-card-title>
+      <mat-card-subtitle></mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content style="padding: 1rem;">
+        <div class="row mat-card-content-row-spacer">
+            <div class="col">
+              <span>Select the date range you're looking room for</span> 
+            </div>
+        </div>
+        <div class="row mat-card-content-row-spacer">
+            <div class="col">
+                <mat-form-field class="example-full-width" appearance="outline">
+                    <mat-label>Reservation Id: </mat-label>
+                    <input type="search" matInput [formControl]="searchReservationControl">
+                    <button matSuffix mat-button (click)="searchReservation(searchReservationControl.value)"><mat-icon >search</mat-icon></button>
+                  </mat-form-field>
+            </div>
+            <div class="col-md-auto" *ngIf="booking && booking.rooms && booking.reservation">
+                <button mat-raised-button color="warn" (click)="cancelReservation()">Cancel Reservation</button>
+            </div>
+        </div>
+        <div class="row mat-card-content-row-spacer" *ngIf="booking && booking.rooms && booking.reservation">
+            <div mat-subheader>Visitor Information</div>
+            <div class="col">
+                <mat-list>
+                    <mat-list-item>
+                      <mat-icon mat-list-icon>person</mat-icon>
+                      <div mat-line>{{booking.reservation.visitorName}}</div>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+            <div class="col">
+                <mat-list>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>email</mat-icon>
+                        <div mat-line>{{booking.reservation.visitorEmail}}</div>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+            <div class="col">
+                <mat-list>
+                      <mat-list-item>
+                        <mat-icon mat-list-icon>phone</mat-icon>
+                        <div mat-line>{{booking.reservation.visitorPhone}}</div>
+                      </mat-list-item>
+                </mat-list>
+            </div>
+        </div>
+        <div class="row mat-card-content-row-spacer" *ngIf="booking && booking.rooms && booking.reservation">
+            <div class="col">
+                <div class="row mat-card-content-row-spacer">
+                    <div class="col-md-5 rooms-container overflow-auto" *ngFor="let reservationRoom of booking.rooms">
+                      <app-room-availability-card [reservationRoom]="reservationRoom" [reservationId]="booking.reservation.id" 
+                      [roomAvailability]="roomAvailability" (reservationChange)="handleReservationChange($event)"></app-room-availability-card>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+  </mat-card>
