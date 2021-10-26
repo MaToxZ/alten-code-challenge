@@ -21,7 +21,7 @@ The implementation of this project was done in 3 separate Docker containers that
 - Java backend (Spring Boot)
 - Angular frontend
 
-For further technical information about the project, please refer to the documentation folder.
+For further technical information about the project, please refer to the [Documentation Folder](https://github.com/MaToxZ/alten-code-challenge/tree/main/Documentation).
 
 ---
 
@@ -61,7 +61,7 @@ Once the project is up and running you can access the following URLs:
 
 #### PostgresDB
 
-In the documentation folder, you can find an ERD Diagram with the DB Structure. On this implementation we're using an one and only schema **public**
+In the documentation folder, you can find an [ERD Diagram](https://github.com/MaToxZ/alten-code-challenge/blob/main/Documentation/Alten_DB_ERD_Diagram.png) with the DB Structure. On this implementation we're using an one and only schema **public**
 
 - Host: *localhost*
 - Database: *alten*
