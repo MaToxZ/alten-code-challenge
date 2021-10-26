@@ -20,7 +20,7 @@ services:
   #Service definition for our Backend (Spring boot) application
   alten-be-app:
     # The docker file contained in our project will build the jar to generate an image named alten-be-app
-    build: ./
+    build: ./alten-be-app
     container_name: alten-be-app
     #Environment variables for Alten-be-app (Spring boot) application
     environment:
@@ -29,8 +29,18 @@ services:
       - db_username=postgres
       - db_password=docker
     ports:
-      - 8080:8080 #container port 8080 will be running postgres and we map that port to the port 8080 on the host machine
+      - 8080:8080 #container port 8080 will be running alten-be-app and we map that port to the port 8080 on the host machine
     links:
-      - alten-postgres
+      - alten-postgres #We link this service to alten-postgres since the BE needs the Database up and running to be able to work.
+
+  #Service definition for our Frontend (Angular) application
+  alten-ui-app:
+    build: ./alten-ui-app
+    container_name: alten-ui-app
+    ports:
+      - 4200:80 #container port 80 will be running ngnix which contains our angular app (built) and we map that port to the port 4200 on the host machine
+    links:
+      - alten-be-app #We link this service to alten-be-app service, since this the ui needs the BE to be up and running in order to work.
+
 #volumes: #Uncomment this code if you want to save the data before the docker is shut down
 #  alten-data:
